@@ -21,7 +21,7 @@ for k = 1:max_iter
 
     % Compute the error
     error = p(:) - x_current(:);
-    error_history(k) = norm(error);
+    error_history(k) = norm(error)
 
 
     % Check convergence
@@ -39,7 +39,7 @@ for k = 1:max_iter
 
     % Update theta
     delta_theta = pinv(J_current) * error;
-    theta = theta + delta_theta;
+    theta = theta + delta_theta
     all_vals = num2cell([theta.', l_val]);
 end
 

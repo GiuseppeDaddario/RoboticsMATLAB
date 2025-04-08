@@ -1,12 +1,13 @@
 %Takes the Denavit-Hartenberg table and compute the direct kinematics.
 %Display the point p and returns the final homogeneous matrix T0N (Denavit-Hartenberg matrix).
-function [p,T0N] = DK(table)
+function [p,T0N, R, A] = DK(table)
 alpha = sym('alpha');
 d = sym('d');
 a = sym('a');
 theta = sym('theta');
 N=size(table,1);
 DHTABLE=table;
+
 
 % Build the general Denavit-Hartenberg trasformation matrix
 TDH = [ cos(theta) -sin(theta)*cos(alpha)  sin(theta)*sin(alpha) a*cos(theta);
@@ -31,9 +32,11 @@ end
 disp(['Number of joints N=',num2str(N)])
 fprintf("\nNow I do the product of the matrices A{0}*A{1}*...A{n}\n\n")
 T = eye(4);
+R = cell(1, N);
 for i=1:N 
     T = T*A{i};
     T = simplify(T);
+    R{i} = T(1:3,1:3);
     if i > 1
         indices = sprintf('%d', 1:i);
         fprintf('A{%s} :\n', indices);
@@ -42,11 +45,11 @@ for i=1:N
 end
 fprintf("\nThe transformation of the end effector is given by the final matrix:\n")
 % output TN matrix
-T0N = T
+T0N = T;
 
 fprintf("The coordinates of the end effector point are:\n")
 % output ON position
-p = T(1:3,4)
+p = T(1:3,4);
 
 % output xN axis
 n=T(1:3,1);

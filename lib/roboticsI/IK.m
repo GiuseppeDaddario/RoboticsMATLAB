@@ -43,7 +43,8 @@ if rtype == "RR"
         return
     end
     disp("Since we are in a regular case, we have two solutions")
-    q = [q1 q2; q1p q2p];
+    q = [q1 q1p;
+         q2 q2p];
     return
 elseif rtype == "RRP"
     disp("Robot type: RRP")

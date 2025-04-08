@@ -12,7 +12,7 @@ suby = char(0x1D67); % y
 subz = char(0x2095); % z
 c_theta = char(0x03B8); %theta
 
-if size(R,1) ~= 3 || size(R,2) ~= 3 || abs(det(R) - 1) > 1e-16
+if size(R,1) ~= 3 || size(R,2) ~= 3 || abs(det(R) - 1) > 1e-15
         error('R should be a rotation matrix 3x3, with determinant +1');
 end
 s = (R(1,2)-R(2,1))^2 + (R(1,3)-R(3,1))^2 + (R(2,3)-R(3,2))^2;

@@ -4,7 +4,7 @@
 %useful for solving the inverse problem to find the angles. In this case,
 %it shows also the starting point to compute the sin/cos of one angle by
 %sqaring and summing the matrix components.
-function R = getRfromEulerAngles(order, angles)
+function [R, Rs] = getRfromEulerAngles(order, angles)
 
     if nargin < 2
         angles = [];
@@ -27,6 +27,7 @@ function R = getRfromEulerAngles(order, angles)
                    0, 0, 1];
     
     %compute the matrix
+    Rs = cell(1,length(order));
     R = eye(3, 'sym');
     for i = 1:length(order)
         axis = order(i);
@@ -36,14 +37,17 @@ function R = getRfromEulerAngles(order, angles)
             case 'X'
                 R_ = Rx(angle);
                 disp(R_)
+                Rs{i} = R;
                 R = R * R_;
             case 'Y'
                 R_ = Ry(angle);
                 disp(R_)
+                Rs{i} = R;
                 R = R * R_;
             case 'Z'
                 R_ = Rz(angle);
                 disp(R_)
+                Rs{i} = R;
                 R = R * R_;
             otherwise
                 error('Asse di rotazione non valido. Usa solo X, Y o Z.');

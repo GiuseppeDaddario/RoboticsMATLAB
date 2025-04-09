@@ -22,4 +22,5 @@ for n=1:n_links
     end
     c{n} = sum(c{n}(:));
 end
+c = [c{:}].';
 end

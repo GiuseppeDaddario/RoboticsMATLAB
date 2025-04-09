@@ -114,5 +114,6 @@ table = [0 l1 0 q1;
 rc1 = [-l1+d1;0;0]; rc2 = [-l2+d2;0;0]; g_vector = [0;-g0;0];
 % rc1_ = [rc1x;rc1y;rc1z]; rc2_ = [rc2x;0;0];
 % 
-[T,M,c,g] = moving_frames(table,"RR",[rc1;rc2],g_vector,true);
+[T,M,c,g] = moving_frames(table,"RR",[rc1;rc2],g_vector,false);
+S = factorize_M(M);
 

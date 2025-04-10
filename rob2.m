@@ -104,16 +104,15 @@ format short
 %% Exam 12.06.2024
 % exercise 1
 clc
-syms l1 l2 q1 q2 d1 d2 g0 real
+syms a2 a3 q1 q2 q3 dc1 dc2 dc3 real
 
-table = [0 l1 0 q1;
-         0 l2 0 q2];
+table = [pi/2 0 0 q1;
+         0 a2 0 q2;
+         0 a3 0 q3];
 
-% table = [-pi/2 0 l1 q1;
-%          0 l2 0 q2];
-rc1 = [-l1+d1;0;0]; rc2 = [-l2+d2;0;0]; g_vector = [0;-g0;0];
-% rc1_ = [rc1x;rc1y;rc1z]; rc2_ = [rc2x;0;0];
-% 
-[T,M,c,g] = moving_frames(table,"RR",[rc1;rc2],g_vector,false);
-S = factorize_M(M);
+rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0]; g_vector = [0;-g0;0];
+
+ 
+[T,M,c,g] = moving_frames(table,"RRR",[rc1;rc2;rc3],g_vector,false);
+
 

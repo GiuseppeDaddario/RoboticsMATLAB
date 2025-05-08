@@ -6,7 +6,7 @@
 %% output variables:
 % - S: factorization of the inertia matrix
 
-function S = factorize_M(M)
+function [S,S2,S3] = factorize_M(M)
 n_links = size(M,1);
 q_vector = sym('q', [n_links,1],'real');
 dq_vector = sym('dq', [n_links,1],'real');
@@ -20,7 +20,24 @@ for n=1:n_links
     S{n} = simplify(dq_vector.'*c{n});
 end
 S = vertcat(S{:});
-dM = diff_matrix(M,q_vector);
+dM = diff_wrt(M,q_vector,1);
 disp("the result of the product (dM - 2S) is a skew symmetric matrix:")
-simplify(dM - 2*S)
+op1=simplify(dM - 2*S)
+fprintf("skew_check: %s\n",is_skew(op1))
+try
+    S2 = S + skew_from_vector(dq_vector);
+    disp("the result of the product (dM - 2S') is a skew symmetric matrix:")
+    op2=simplify(dM - 2*S2)
+    fprintf("skew_check: %s\n",is_skew(op2))
+catch
+    S2 = []
+end
+try
+    S3 = S2; S3(3,:) = 0;
+    disp("the result of the product (dM - 2S'') is NOT a skew symmetric matrix:")
+    op3=simplify(dM - 2*S3)
+    fprintf("skew_check: %s\n",is_skew(op3))
+catch
+    S3 = []
+end
 end

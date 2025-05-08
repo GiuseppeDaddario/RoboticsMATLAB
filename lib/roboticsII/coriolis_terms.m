@@ -23,4 +23,5 @@ for n=1:n_links
     c{n} = sum(c{n}(:));
 end
 c = [c{:}].';
+c = simplify(c);
 end

@@ -1,4 +1,4 @@
-function [T, M, c, g] = moving_frames(table, joint_types, CoMi, gv, renaming)
+function [T, M, c,g] = moving_frames(table, joint_types, CoMi, I,gv)
 joint_types = char(joint_types);
 n_links = length(joint_types);
 
@@ -15,13 +15,17 @@ for i = 1:n_links
     m{i} = sym(sprintf('m%d', i), 'real');
 end
 
-% Syms for the inertia
-Ic = cell(1, n_links);
-for i = 1:n_links
-    Ixx = sym(sprintf('Ic%d_xx', i), 'real');
-    Iyy = sym(sprintf('Ic%d_yy', i), 'real');
-    Izz = sym(sprintf('Ic%d_zz', i), 'real');
-    Ic{i} = diag([Ixx, Iyy, Izz]);
+if isempty(I)
+    % Syms for the inertia
+    Ic = cell(1, n_links);
+    for i = 1:n_links
+        Ixx = sym(sprintf('Ic%d_xx', i), 'real');
+        Iyy = sym(sprintf('Ic%d_yy', i), 'real');
+        Izz = sym(sprintf('Ic%d_zz', i), 'real');
+        Ic{i} = diag([Ixx, Iyy, Izz]);
+    end
+else
+    Ic = I;
 end
 
 % Building center of masses from CoMi
@@ -31,7 +35,7 @@ for i = 1:n_links
 end
 
 % Direct Kinematics
-[~, ~, ~, A] = DK(table); clc
+[~, ~, ~, A] = DK(table); 
 R = cell(1, n_links);
 p = cell(1, n_links);
 r_i = cell(1, n_links);
@@ -52,6 +56,7 @@ for i = 1:n_links
 
     % Velocity
     v_tmp = R{i}.' * (v_prev + sigma{i} * [0; 0; dq{i}]);
+
     v{i} = simplify(v_tmp + cross(w{i}, r_i{i}), 'Steps', 10);
 
     % Velocity of the center of mass
@@ -76,14 +81,25 @@ T_tot = simplify(sum([T{:}]), 'Steps', 20);
 M = simplify(hessian(T_tot, dq_vector), 'Steps', 20);
 fprintf("\nMatrix M(q):---------------------------------------------------------------------------------------------------------------------\n"); disp(M)
 
-% usually never works (TODO)
-if renaming
-    M = rename_coefficients(M);
-end
+% TODO
+% if renaming
+%     M = rename_coefficients(M);
+% end
 
 % Coriolis and gravity terms
 c = coriolis_terms(M);
 fprintf("\nCoriolis terms c(q,dq):---------------------------------------------------------------------------------------------------------------------\n"); disp(c)
-g = gravity_terms(A, m, CoMi, gv);
+
+P = cell(1, n_links);
+rci = cell(1,n_links);
+P{1} = A{1};
+for i = 2:n_links
+    P{i} = P{i-1} * A{i};
+end
+for i = 1:n_links
+    rci{i} = P{i}*[rc{i};1];
+    rci{i}=rci{i}(1:3);
+end
+g = gravity_terms(m, gv,rci);
 fprintf("\nGravity terms g(q):---------------------------------------------------------------------------------------------------------------------\n"); disp(g)
 end

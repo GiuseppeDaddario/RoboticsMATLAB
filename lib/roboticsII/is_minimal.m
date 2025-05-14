@@ -23,7 +23,7 @@ function [minimal, rank_Y] = is_minimal(Y, a, joint_syms)
         random_values = 2*rand(1, length(joint_syms)) - 1;
         
         % Sostituisci questi valori nella matrice Y
-        Y_i = vpa(subs(Y, joint_syms, random_values),2)
+        Y_i = vpa(subs(Y, joint_syms, random_values),2);
         
         % Accumula nella matrice totale
         Y_full = [Y_full; Y_i];

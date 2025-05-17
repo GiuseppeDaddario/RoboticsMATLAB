@@ -10,10 +10,7 @@ dq = num2cell(dq_vector);  % dq{1}, dq{2}, ...
 sigma = num2cell(double(joint_types == 'P'));
 
 % Syms for the masses
-m = cell(1, n_links);
-for i = 1:n_links
-    m{i} = sym(sprintf('m%d', i), 'real');
-end
+m = sym('m', [n_links,1], 'real');
 
 if isempty(I)
     % Syms for the inertia
@@ -63,7 +60,7 @@ for i = 1:n_links
     vc{i} = simplify(v{i} + cross(w{i}, rc{i}), 'Steps', 10);
 
     % Kinetic energy
-    T{i} = simplify(0.5 * m{i} * (vc{i}.' * vc{i}) + 0.5 * w{i}.' * Ic{i} * w{i}, 'Steps', 10);
+    T{i} = simplify(0.5 * m(i) * (vc{i}.' * vc{i}) + 0.5 * w{i}.' * Ic{i} * w{i}, 'Steps', 10);
 
     % Update previous values
     w_prev = w{i};

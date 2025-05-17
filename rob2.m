@@ -54,4 +54,43 @@ format short
 % pinv_Ma_M = simplify(pinv_Ma_M*c)
 
 %ex4
+%TODO
+
+%ex5
+% clc
+% syms m1 dc1 m2 I1 I2 l1 t T a b k q1 q2 dq1 dq2 ddq1 ddq2 a1 real
+% q = [a+b*(1-cos((pi*t)/T)); k];
+% dq = [pi/T*b*sin((pi*t)/T);0];
+% ddq = [(pi/T)^2*b*cos((pi*t)/T);0];
+% 
+% 
+% M = [m1*dc1^2 + m2*l1^2 + m2*q2^2 + I1 + I2, -l1*m2;
+%                                     -l1*m2,     m2];
+% c = coriolis_terms(M);
+% sub = [q(1), q(2), dq(1), dq(2), ddq(1), ddq(2)];
+% 
+% 
+% tau = simplify(M*ddq+c);
+% tau = subs(tau, [m2*l1^2 + m1*dc1^2 + I1 + I2,q1,q2,dq1,dq2,ddq1,ddq2],[a1,sub])
+% 
+% syms tau_max_1 real
+% T_star = sqrt((a1+m2*k^2)*b*pi^2/tau_max_1);
+% tau_2_t = simplify(subs(tau(2),t,0));
+% tau_2_t = simplify(subs(tau_2_t,T,T_star))
+% tau_2_T = simplify(subs(tau(2),t,T));
+% tau_2_T = simplify(subs(tau_2_T,T,T_star))
+
+%% Exam 12.06.2024
 clc
+syms q1 q2 q3 a2 a3 dc1 dc2 dc3 real
+table = [pi/2 0 0 q1;
+           0 a2 0 q2;
+           0 a3 0 q3];
+
+[p, T0N, R, A] = DK(table);
+
+% a2=1;a3=1;
+% plot_robot(A, [q1,q2,q3], [1,pi/2,0]);
+
+rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0];
+[T,M,c,g] = moving_frames(table,"RRR",[rc1;rc2;rc3],[],[0;0;0])

@@ -95,9 +95,9 @@ table = [pi/2 0 0 q1;
 rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0];
 [T,M,c,g] = moving_frames(table,"RRR",[rc1;rc2;rc3],[],[0;0;0])
 
-% syms ro1 ro2 ro3 ro4 ro5 ro6 Ic3_zz m3 real
-% 
-% c3 = Ic2_yy + m2*dc2^2 + m3*a2^2
-% c4 = Ic2_zz + Ic3_zz + m3*a2^2 + m2*dc2^2 + m3*dc3^2;
-% c5 = a2*dc3*m3;
-% c6 = Ic3_zz + m3*dc3^2;
+syms ro1 ro2 ro3 ro4 ro5 ro6 Ic3_zz m3 real
+
+c3 = Ic2_yy + m2*dc2^2 + m3*a2^2 - Ic2_xx;
+c4 = Ic2_zz + Ic3_zz + m3*a2^2 + m2*dc2^2 + m3*dc3^2;
+c5 = a2*dc3*m3;
+c6 = Ic3_zz + m3*dc3^2;

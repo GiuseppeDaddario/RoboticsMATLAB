@@ -67,7 +67,7 @@ for i = 1:n_links
     v_prev = v{i};
 
     %displaying the computations
-    disp_step(w,v,vc,T,i)
+    disp_algorithm(w,v,vc,T,i)
 
 end
 
@@ -76,16 +76,9 @@ T_tot = simplify(sum([T{:}]), 'Steps', 20);
 
 % Computing inertia matrix M
 M = simplify(hessian(T_tot, dq_vector), 'Steps', 20);
-fprintf("\nMatrix M(q):---------------------------------------------------------------------------------------------------------------------\n"); disp(M)
-
-% TODO
-% if renaming
-%     M = rename_coefficients(M);
-% end
 
 % Coriolis and gravity terms
 c = coriolis_terms(M);
-fprintf("\nCoriolis terms c(q,dq):---------------------------------------------------------------------------------------------------------------------\n"); disp(c)
 
 P = cell(1, n_links);
 rci = cell(1,n_links);
@@ -98,5 +91,7 @@ for i = 1:n_links
     rci{i}=rci{i}(1:3);
 end
 g = gravity_terms(m, gv,rci);
-fprintf("\nGravity terms g(q):---------------------------------------------------------------------------------------------------------------------\n"); disp(g)
+
+disp_algorithm({}, {}, {}, {}, n_links + 1, M, c, g);
 end
+

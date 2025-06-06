@@ -1,5 +1,5 @@
 %% function to display the elements of the inertia matrix so to simply collect coefficients by inspection
-function [new_M,elements] = rewrite(M)
+function new_M = rewrite(M)
 rows = size(M,1);
 cols = size(M,2);
 new_M = M;
@@ -12,7 +12,7 @@ for i=1:rows
         eq = varname == m;                     % costruisce equazione m11 == ...
         fprintf('%s = %s;\n', char(varname), char(m));
         new_M(i,j) = m;
-        elements = [elements; eq];
+        elements = [elements; eq]; %% if needed, return them
     end
 end
 end

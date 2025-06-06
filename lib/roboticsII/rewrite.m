@@ -1,14 +1,18 @@
 %% function to display the elements of the inertia matrix so to simply collect coefficients by inspection
-function new_M = rewrite(M)
+function [new_M,elements] = rewrite(M)
 rows = size(M,1);
 cols = size(M,2);
 new_M = M;
+elements = [];
 q_vector = sym('q', [rows,1], 'real');
 for i=1:rows
     for j=1:cols
         m = collect(collect(M(i,j),cos(q_vector)),sin(q_vector));
-        fprintf('m%d%d = %s\n',i,j,m)
-        new_M(i,j)=m;
+        varname = sym(sprintf('m%d%d', i, j)); % crea variabile simbolica m11, m12, ecc.
+        eq = varname == m;                     % costruisce equazione m11 == ...
+        fprintf('%s = %s;\n', char(varname), char(m));
+        new_M(i,j) = m;
+        elements = [elements; eq];
     end
 end
 end

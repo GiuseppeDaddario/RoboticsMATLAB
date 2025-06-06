@@ -1,4 +1,5 @@
 function disp_algorithm(w, v, vc, T, i, M, c, g)
+FONTSIZE = 20;
     persistent fig ax y_offset lines_history n_total
 
     is_final = nargin == 8;
@@ -9,14 +10,14 @@ function disp_algorithm(w, v, vc, T, i, M, c, g)
         % title
         title_line_str = sprintf('$$\\underline{\\textbf{Inertia Matrix M}}$$');
         h_text = text(ax, 0.02, -y_offset, title_line_str, ...
-            'Interpreter', 'latex', 'FontSize', 13, 'VerticalAlignment', 'top');
+            'Interpreter', 'latex', 'FontSize', FONTSIZE+1, 'VerticalAlignment', 'top');
         lines_history{end+1} = h_text;
         y_offset = y_offset + get_text_height_approx(h_text, ax);
         M_str = latex(M);
         M_str = apply_dot_notation(M_str);
         M_line_str = sprintf('$$\\mathbf{M(q)} = %s$$', M_str);
         h_text = text(ax, 0.02, -y_offset, M_line_str, ...
-            'Interpreter', 'latex', 'FontSize', 12, 'VerticalAlignment', 'top');
+            'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
         lines_history{end+1} = h_text;
         y_offset = y_offset + get_text_height_approx(h_text, ax, 1.0);
 
@@ -24,14 +25,14 @@ function disp_algorithm(w, v, vc, T, i, M, c, g)
         % title
         title_line_str = sprintf('$$\\underline{\\textbf{Coriolis coefficients c}}$$');
         h_text = text(ax, 0.02, -y_offset, title_line_str, ...
-            'Interpreter', 'latex', 'FontSize', 13, 'VerticalAlignment', 'top');
+            'Interpreter', 'latex', 'FontSize', FONTSIZE+1, 'VerticalAlignment', 'top');
         lines_history{end+1} = h_text;
         y_offset = y_offset + get_text_height_approx(h_text, ax);
         c_cell = arrayfun(@(e) apply_dot_notation(latex(simplify(e, 'Steps', 20))), c, 'UniformOutput', false);
         for i = 1:length(c_cell)
             row_str = sprintf('$$\\mathbf{c}_{%d}(q, \\dot{q}) = %s$$', i, c_cell{i});
             h_text = text(ax, 0.02, -y_offset, row_str, ...
-                'Interpreter', 'latex', 'FontSize', 12, 'VerticalAlignment', 'top');
+                'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
             lines_history{end+1} = h_text;
             y_offset = y_offset + get_text_height_approx(h_text, ax, 1.0);
         end
@@ -40,13 +41,13 @@ function disp_algorithm(w, v, vc, T, i, M, c, g)
         % title
         title_line_str = sprintf('$$\\underline{\\textbf{Gravity coefficients g}}$$');
         h_text = text(ax, 0.02, -y_offset, title_line_str, ...
-            'Interpreter', 'latex', 'FontSize', 13, 'VerticalAlignment', 'top');
+            'Interpreter', 'latex', 'FontSize', FONTSIZE+1, 'VerticalAlignment', 'top');
         lines_history{end+1} = h_text;
         y_offset = y_offset + get_text_height_approx(h_text, ax);
         g_str = apply_dot_notation(latex(g));
         g_line_str = sprintf('$$\\mathbf{g(q)} = %s$$', g_str);
         h_text = text(ax, 0.02, -y_offset, g_line_str, ...
-            'Interpreter', 'latex', 'FontSize', 12, 'VerticalAlignment', 'top');
+            'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
         lines_history{end+1} = h_text;
         y_offset = y_offset + get_text_height_approx(h_text, ax, 1.0);
 
@@ -90,45 +91,45 @@ function disp_algorithm(w, v, vc, T, i, M, c, g)
     % Step title
     title_line_str = sprintf('$$\\underline{\\textbf{Step %d}}$$', i);
     h_text = text(ax, 0.02, -y_offset, title_line_str, ...
-        'Interpreter', 'latex', 'FontSize', 13, 'VerticalAlignment', 'top');
+        'Interpreter', 'latex', 'FontSize', FONTSIZE+1, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     y_offset = y_offset + get_text_height_approx(h_text, ax);
 
     % w vector
     h_text = text(ax, 0.02, -y_offset, '$$\mathbf{w}$$', ...
-        'Interpreter', 'latex', 'FontSize', 12, 'VerticalAlignment', 'top');
+        'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     y_offset = y_offset + get_text_height_approx(h_text, ax);
     for k = 1:n
         str = get_cell_latex(wi, k);
         h_text = text(ax, 0.04, -y_offset, sprintf('$$%s$$', str), ...
-            'Interpreter', 'latex', 'FontSize', 11, 'VerticalAlignment', 'top');
+            'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
         lines_history{end+1} = h_text;
         y_offset = y_offset + get_text_height_approx(h_text, ax, 0.8);
     end
 
     % v vector
     h_text = text(ax, 0.02, -y_offset, '$$\mathbf{v}$$', ...
-        'Interpreter', 'latex', 'FontSize', 12, 'VerticalAlignment', 'top');
+        'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     y_offset = y_offset + get_text_height_approx(h_text, ax);
     for k = 1:n
         str = get_cell_latex(vi, k);
         h_text = text(ax, 0.04, -y_offset, sprintf('$$%s$$', str), ...
-            'Interpreter', 'latex', 'FontSize', 11, 'VerticalAlignment', 'top');
+            'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
         lines_history{end+1} = h_text;
         y_offset = y_offset + get_text_height_approx(h_text, ax, 0.8);
     end
 
     % vc vector
     h_text = text(ax, 0.02, -y_offset, '$$\mathbf{v_c}$$', ...
-        'Interpreter', 'latex', 'FontSize', 12, 'VerticalAlignment', 'top');
+        'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     y_offset = y_offset + get_text_height_approx(h_text, ax);
     for k = 1:n
         str = get_cell_latex(vci, k);
         h_text = text(ax, 0.04, -y_offset, sprintf('$$%s$$', str), ...
-            'Interpreter', 'latex', 'FontSize', 11, 'VerticalAlignment', 'top');
+            'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
         lines_history{end+1} = h_text;
         y_offset = y_offset + get_text_height_approx(h_text, ax, 0.8);
     end
@@ -139,7 +140,7 @@ function disp_algorithm(w, v, vc, T, i, M, c, g)
     T_str = apply_dot_notation(latex(simplify(T{i}, 'Steps', simplify_steps)));
     kin_line_str = sprintf('$$T_{%d} = %s$$', i, T_str);
     h_text = text(ax, 0.02, -y_offset, kin_line_str, ...
-        'Interpreter', 'latex', 'FontSize', 12, 'VerticalAlignment', 'top');
+        'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     y_offset = y_offset + get_text_height_approx(h_text, ax) + section_spacing * 2;
 

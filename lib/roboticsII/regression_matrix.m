@@ -1,4 +1,4 @@
-function [tau, Y, pi_coeffs] = regression_matrix(M, c, g, pi_coeffs)
+function [tau, Y, pi_coeffs] = regression_matrix(M, c, g, Fv,pi_coeffs)
 %REGRESSION_MATRIX Computes torque tau and regression matrix Y
 % Inputs:
 %   M - Mass matrix (symbolic or numeric)
@@ -14,6 +14,7 @@ function [tau, Y, pi_coeffs] = regression_matrix(M, c, g, pi_coeffs)
 
     % Define symbolic variables
     ddq_vector = sym('ddq', [n_links, 1], 'real');  % Joint accelerations
+    dq_vector = sym('dq', [n_links, 1], 'real');  % Joint accelerations
 
     % Inertial parameters
     m       = sym('m', [n_links, 1], 'real');
@@ -46,7 +47,7 @@ function [tau, Y, pi_coeffs] = regression_matrix(M, c, g, pi_coeffs)
     end
 
     % Compute torque and regression matrix
-    tau = simplify(M * ddq_vector + c + g);
+    tau = simplify(M * ddq_vector + c + g + Fv*dq_vector);
     Y = simplify(jacobian(tau, pi_coeffs));
 
     % Optional: remove zero columns (commented out)

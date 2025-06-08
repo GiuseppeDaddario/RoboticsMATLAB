@@ -19,10 +19,15 @@ is_final = false;
     switch nargin
         case 0
             is_init = true;
+        case 1
+            is_final = true;
+            M = varargin{1};
+            c = sym([0;0;0]);
+            g = sym([0;0;0]);
         case 2
             is_final = true;
             M = varargin{1};
-            c = varargin{1};
+            c = varargin{2};
             g = sym([0;0;0]);
         case 3
             is_final = true;

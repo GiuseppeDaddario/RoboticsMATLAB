@@ -943,19 +943,21 @@ format short
 % ddp = J_num*u + dJ_num*dq
 
 % ex3
-% clear; clc
-% syms q1 q2 q3 dq1 dq2 dq3 m1 m2 m3 dc1 dc2 dc3 I1 I2 I3 real
-% 
-% pc1 = [dc1*cos(q1); dc1*sin(q1)]; vc1 = diff_wrt(pc1,q1,1);
-% pc2 = [(q2-dc2)*cos(q1); (q2-dc2)*sin(q1)]; vc2 = diff_wrt(pc2,[q1,q2],1);
-% pc3 = [q2*cos(q1)+dc3*cos(q1+q3); q2*sin(q1)+dc3*sin(q1+q3)]; vc3 = diff_wrt(pc3,[q1,q2,q3],1);
-% 
-% T1 = 0.5*m1*(vc1.'*vc1) + 0.5*I1*dq1^2;
-% T2 = 0.5*m2*(vc2.'*vc2) + 0.5*I2*dq1^2;
-% T3 = 0.5*m3*(vc3.'*vc3) + 0.5*I3*(dq1+dq3)^2;
-% 
-% [T,M] = kinetic_energy({T1,T2,T3},[dq1,dq2,dq3]);
-% c = coriolis_terms(M);
+clear; clc
+syms q1 q2 q3 dq1 dq2 dq3 m1 m2 m3 dc1 dc2 dc3 I1 I2 I3 real
+
+pc1 = [dc1*cos(q1); dc1*sin(q1)]; vc1 = diff_wrt(pc1,q1,1);
+pc2 = [(q2-dc2)*cos(q1); (q2-dc2)*sin(q1)]; vc2 = diff_wrt(pc2,[q1,q2],1);
+pc3 = [q2*cos(q1)+dc3*cos(q1+q3); q2*sin(q1)+dc3*sin(q1+q3)]; vc3 = diff_wrt(pc3,[q1,q2,q3],1);
+
+T1 = 0.5*m1*(vc1.'*vc1) + 0.5*I1*dq1^2;
+T2 = 0.5*m2*(vc2.'*vc2) + 0.5*I2*dq1^2;
+T3 = 0.5*m3*(vc3.'*vc3) + 0.5*I3*(dq1+dq3)^2;
+
+[T,M] = kinetic_energy({T1,T2,T3},[dq1,dq2,dq3]);
+c = coriolis_terms(M);
+%%
+dyn_model_latex(M,c)
 
 %%
 % 

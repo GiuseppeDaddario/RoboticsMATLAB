@@ -47,7 +47,7 @@ w = cell(1, n_links); v = cell(1, n_links); vc = cell(1, n_links); T = cell(1, n
 w_prev = sym([0;0;0]); v_prev = sym([0;0;0]);
 
 %display formulas
-disp_algorithm();
+dyn_model_latex();
 
 for i = 1:n_links
 
@@ -69,7 +69,7 @@ for i = 1:n_links
     v_prev = v{i};
 
     %displaying the computations
-    disp_algorithm(w,v,vc,T,i)
+    dyn_model_latex(w,v,vc,T,i)
 
 end
 
@@ -94,6 +94,6 @@ for i = 1:n_links
 end
 g = gravity_terms(m, gv,rci);
 
-disp_algorithm({}, {}, {}, {}, n_links + 1, M, c, g);
+dyn_model_latex(M, c, g);
 end
 

@@ -1,4 +1,4 @@
-function disp_algorithm(w, v, vc, T, i, M, c, g)
+function dyn_model_latex(varargin)
 % --- Costanti di Configurazione ---
 FONTSIZE_NORMAL = 20;
 FONTSIZE_TITLE = 21;
@@ -13,8 +13,30 @@ H_GAP = 0.01;            % Spazio orizzontale tra le equazioni w, v, vc
 persistent fig ax current_y lines_history
 
 % --- Gestione delle modalità di chiamata (inizializzazione, step, finale) ---
-is_final = nargin == 8;
-is_init = nargin == 0;
+is_init = false;
+is_final = false;
+
+    switch nargin
+        case 0
+            is_init = true;
+        case 2
+            is_final = true;
+            M = varargin{1};
+            c = varargin{1};
+            g = sym([0;0;0]);
+        case 3
+            is_final = true;
+            M = varargin{1};
+            c = varargin{2};
+            g = varargin{3};
+        case 5
+            w = varargin{1}; 
+            v = varargin{2};
+            vc = varargin{3};
+            T = varargin{4}; 
+            i = varargin{5};
+    end
+
 
 % --- Inizializzazione della Figura (solo alla prima chiamata) ---
 if isempty(fig) || ~isvalid(fig) || is_init

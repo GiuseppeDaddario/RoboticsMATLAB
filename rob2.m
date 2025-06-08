@@ -82,19 +82,19 @@ format short
 
 %% Exam 12.06.2024
 % ex1
-clear; clc
-syms q1 q2 q3 a2 a3 dc1 dc2 dc3 real
-table = [pi/2 0 0 q1;
-           0 a2 0 q2;
-           0 a3 0 q3];
-
-[p, T0N, R, A] = DK(table);
-
-% a2=1;a3=1;
-% plot_robot(A, [q1,q2,q3], [1,pi/2,0]);
-
-rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0];
-[T,M,c,g] = moving_frames(table,"RRR",[rc1;rc2;rc3],[],[0;0;0])
+% clear; clc
+% syms q1 q2 q3 a2 a3 dc1 dc2 dc3 real
+% table = [pi/2 0 0 q1;
+%            0 a2 0 q2;
+%            0 a3 0 q3];
+% 
+% [p, T0N, R, A] = DK(table);
+% 
+% % a2=1;a3=1;
+% % plot_robot(A, [q1,q2,q3], [1,pi/2,0]);
+% 
+% rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0];
+% [T,M,c,g] = moving_frames(table,"RRR",[rc1;rc2;rc3],[],[0;0;0])
 
 % %%
 % syms ro1 ro2 ro3 ro4 ro5 ro6 Ic3_zz m3 real
@@ -528,7 +528,7 @@ rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0];
 % M_bar = simplify((T^-1).'*M*T^-1);
 % c = [c1;c2;c3];
 % c_bar = simplify((T^-1).'*c);
-% 
+% m
 % raw2latex(M_bar)
 % raw2latex(c_bar)
 
@@ -956,6 +956,8 @@ rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0];
 % 
 % [T,M] = kinetic_energy({T1,T2,T3},[dq1,dq2,dq3]);
 % c = coriolis_terms(M);
+
+%%
 % 
 % %%
 % syms a1 a2 a3 a4 a5 real

@@ -46,6 +46,9 @@ end
 w = cell(1, n_links); v = cell(1, n_links); vc = cell(1, n_links); T = cell(1, n_links);
 w_prev = sym([0;0;0]); v_prev = sym([0;0;0]);
 
+%display formulas
+disp_algorithm();
+
 for i = 1:n_links
 
     % Angular velocity
@@ -53,7 +56,6 @@ for i = 1:n_links
 
     % Velocity
     v_tmp = R{i}.' * (v_prev + sigma{i} * [0; 0; dq{i}]);
-
     v{i} = simplify(v_tmp + cross(w{i}, r_i{i}), 'Steps', 10);
 
     % Velocity of the center of mass

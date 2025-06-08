@@ -4,7 +4,7 @@ FONTSIZE_NORMAL = 20;
 FONTSIZE_TITLE = 21;
 X_MARGIN = 0.02;         % Margine orizzontale sinistro
 Y_TOP_MARGIN = 0.98;     % Punto di partenza verticale (torna al valore originale)
-LINE_SPACING = 2.6;      % Fattore di spaziatura per linee normali
+LINE_SPACING = 2.5;      % Fattore di spaziatura per linee normali
 SECTION_SPACING = 3;   % Fattore di spaziatura dopo un titolo di sezione
 FORMULA_SPACING = 1.2;
 H_GAP = 0.01;            % Spazio orizzontale tra le equazioni w, v, vc
@@ -23,7 +23,7 @@ if isempty(fig) || ~isvalid(fig) || is_init
         close(fig);
     end
     
-    fig = figure('Name', 'Moving Frames Algorithm', 'NumberTitle', 'off', 'Color', 'w', ...
+    fig = figure('Name', 'Algoritmo Moving Frames (LaTeX)', 'NumberTitle', 'off', 'Color', 'w', ...
                  'Units', 'normalized', 'OuterPosition', [0 0 1 1]);
     ax = axes('Parent', fig, 'Units', 'normalized', 'Position', [0 0 1 1]);
     axis(ax, [0 1 0 1]); % Usa un sistema di coordinate fisso e normalizzato
@@ -38,7 +38,7 @@ end
 % Se la chiamata è solo per inizializzazione, mostra le formule e termina
 if is_init
     % Titolo principale
-    h_text = text(ax, X_MARGIN, current_y, '$$\underline{\textbf{Steps formulas}}$$','Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
+    h_text = text(ax, X_MARGIN, current_y, '$$\underline{\textbf{Formule dell''Algoritmo Moving Frames}}$$','Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     drawnow;
     current_y = current_y - get_effective_text_height(h_text) * LINE_SPACING;
@@ -120,15 +120,9 @@ if ~is_final
 % --- Logica di Stampa Finale (M, c, g) ---
 else 
     % --- Matrice di Inerzia M ---
-    
-    h_text = text(ax, X_MARGIN, current_y, '$$\underline{\textbf{Inertia matrix M}}$$','Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
-    lines_history{end+1} = h_text;
-    drawnow;
-    current_y = current_y - get_effective_text_height(h_text) * LINE_SPACING;
-
-    % --- Formula M ---
-    M_formula = "$$T = \frac{1}{2} \dot{\mathbf{q}}^\top \mathbf{M} \dot{\mathbf{q}}$$";
-    h_text = text(ax, X_MARGIN, current_y, M_formula,'Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
+    % --- Formula ---
+    M_formula = "\frac{1}{2} ";
+    h_text = text(ax, X_MARGIN, current_y, '$$\underline{\textbf{Matrice di Inerzia M}}$$','Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     drawnow;
     current_y = current_y - get_effective_text_height(h_text) * LINE_SPACING;
@@ -141,26 +135,10 @@ else
     current_y = current_y - get_effective_text_height(h_text) * SECTION_SPACING;
 
     % --- Vettore di Coriolis c ---
-    h_text = text(ax, X_MARGIN, current_y, '$$\underline{\textbf{Coriolis coefficients c}}$$','Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
+    h_text = text(ax, X_MARGIN, current_y, '$$\underline{\textbf{Coefficienti di Coriolis c}}$$','Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     drawnow;
     current_y = current_y - get_effective_text_height(h_text) * LINE_SPACING;
-
-    % --- Formula C ---
-    C_formula = "$$C_i(q) = \frac{1}{2} \left( \frac{\partial \mathbf{M}_{i}}{\partial \mathbf{q}} + \left( \frac{\partial \mathbf{M}_{i}}{\partial \mathbf{q}} \right)^\top - \frac{\partial \mathbf{M}}{\partial q_i} \right)$$";
-    c_formula = "$$c_i(q, \dot{\mathbf{q}}) = \dot{\mathbf{q}}^\top C_i(q) \, \dot{\mathbf{q}}$$";
-    current_x = X_MARGIN;
-    h_text = text(ax, current_x, current_y, C_formula, ...
-        'Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
-    lines_history{end+1} = h_text;
-    drawnow;
-    text_width = get_text_width(h_text);
-    current_x = current_x + text_width + 0.02;
-    h_text = text(ax, current_x, current_y, c_formula, ...
-        'Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
-    lines_history{end+1} = h_text;
-    drawnow;
-    current_y = current_y - get_effective_text_height(h_text) * (LINE_SPACING+1.5);
     
     c_cell = arrayfun(@(e) apply_dot_notation(latex(simplify(e, 'Steps', 20))), c, 'UniformOutput', false);
     for idx = 1:length(c_cell)
@@ -174,23 +152,7 @@ else
     current_y = current_y - get_effective_text_height(h_text) * (SECTION_SPACING - LINE_SPACING);
 
     % --- Vettore di Gravità g ---
-    h_text = text(ax, X_MARGIN, current_y, '$$\underline{\textbf{Gravity vector g}}$$','Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
-    lines_history{end+1} = h_text;
-    drawnow;
-    current_y = current_y - get_effective_text_height(h_text) * LINE_SPACING;
-
-    % --- Formula G ---
-    U_formula = "$$U_i = -m_i \, \mathbf{g}^\top \mathbf{r}_{0,ci}$$";
-    G_formula = '$$g(q) = \left( \frac{\partial \mathbf{U}_{\mathrm{tot}}}{\partial \mathbf{q}} \right)^\top$$';
-    current_x = X_MARGIN;
-    h_text = text(ax, current_x, current_y, U_formula, ...
-        'Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
-    lines_history{end+1} = h_text;
-    drawnow;
-    text_width = get_text_width(h_text);
-    current_x = current_x + text_width + 0.02;
-    h_text = text(ax, current_x, current_y, G_formula, ...
-        'Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
+    h_text = text(ax, X_MARGIN, current_y, '$$\underline{\textbf{Coefficienti di Gravit\\`a g}}$$','Interpreter', 'latex', 'FontSize', FONTSIZE_TITLE, 'VerticalAlignment', 'top');
     lines_history{end+1} = h_text;
     drawnow;
     current_y = current_y - get_effective_text_height(h_text) * LINE_SPACING;

@@ -82,20 +82,20 @@ format short
 
 %% Exam 12.06.2024
 % ex1
-% clc
-% syms q1 q2 q3 a2 a3 dc1 dc2 dc3 real
-% table = [pi/2 0 0 q1;
-%            0 a2 0 q2;
-%            0 a3 0 q3];
-% 
-% [p, T0N, R, A] = DK(table);
-% 
-% % a2=1;a3=1;
-% % plot_robot(A, [q1,q2,q3], [1,pi/2,0]);
-% 
-% rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0];
-% [T,M,c,g] = moving_frames(table,"RRR",[rc1;rc2;rc3],[],[0;0;0])
-% 
+clear; clc
+syms q1 q2 q3 a2 a3 dc1 dc2 dc3 real
+table = [pi/2 0 0 q1;
+           0 a2 0 q2;
+           0 a3 0 q3];
+
+[p, T0N, R, A] = DK(table);
+
+% a2=1;a3=1;
+% plot_robot(A, [q1,q2,q3], [1,pi/2,0]);
+
+rc1 = [0;dc1;0]; rc2 = [dc2-a2;0;0]; rc3 = [dc3-a3;0;0];
+[T,M,c,g] = moving_frames(table,"RRR",[rc1;rc2;rc3],[],[0;0;0])
+
 % %%
 % syms ro1 ro2 ro3 ro4 ro5 ro6 Ic3_zz m3 real
 % 
@@ -257,7 +257,26 @@ format short
 % g = gravity_terms([m1,m2,m3],[0;-g0;0],{rc1,rc2,rc3})
 
 %ex4
-%TODO
+% clc
+% syms a1 a2 a3 q1 q2 m1 m2 mp g0 real
+% 
+% M=[a1+2*a2*cos(q2) a3+a2*cos(q2); a3+a2*cos(q2) a3];
+% 
+% c = coriolis_terms(M);
+% 
+% pc1 = [0.5*cos(q1); 0.5*sin(q1);0];
+% pc2 = [cos(q1)+0.5*cos(q1+q2); sin(q1)+0.5*sin(q1+q2);0];
+% pcp = [cos(q1)+cos(q1+q2); sin(q1)+sin(q1+q2);0];
+% g = gravity_terms([m1,m2,mp],[0;-g0;0],{pc1,pc2,pcp});
+% g = g(1:2);
+% %%
+% syms a4 a5 real
+% c4 = (m1/2 + m2 + mp)*g0;
+% c5 = g0*(m2/2 + mp);
+% g = [a4*cos(q1) + a5*cos(q1+q2); a5*cos(q1+q2)];
+% %%
+% h = cos(q1)+cos(q1+q2);
+% [dyn,lambda,A,D,E,F] = reduced_dynamics(M,c,g,h)
 
 %% Exam 13.02.2023 [https://www.diag.uniroma1.it/deluca/rob2_en/WrittenExamsRob2/Robotics2_23.02.13.pdf]
 % ex1
@@ -727,35 +746,249 @@ format short
 
 %% Exam 11.01.2022 [https://www.diag.uniroma1.it/deluca/rob2_en/WrittenExamsRob2/Robotics2_22.01.11.pdf]
 % ex1
-clc
-syms q1 q2 q3 dq1 dq2 dq3 l1 l2 l3 m1 m2 m3 m_p Ip real
-dc1 = l1/2; dc2 = l2/2; dc3 = l3/2;
+% clc
+% syms q1 q2 q3 dq1 dq2 dq3 l1 l2 l3 m1 m2 m3 m_p Ip real
+% dc1 = l1/2; dc2 = l2/2; dc3 = l3/2;
+% 
+% pc1 = [dc1*cos(q1); dc1*sin(q1)]; vc1 = diff_wrt(pc1,q1,1);
+% pc2 = [l1*cos(q1)-(q2-dc2)*sin(q1); l1*sin(q1)+(q2-dc2)*cos(q1)]; vc2 = diff_wrt(pc2,[q1,q2],1);
+% pc3 = [l1*cos(q1)-q2*sin(q1)+dc3*cos(q1+q3); l1*sin(q1)+q2*cos(q1)+dc3*sin(q1+q3)]; vc3 = diff_wrt(pc3,[q1,q2,q3],1);
+% p = [l1*cos(q1)-q2*sin(q1)+l3*cos(q1+q3); l1*sin(q1)+q2*cos(q1)+l3*sin(q1+q3)]; v = diff_wrt(p,[q1,q2,q3],1);
+% 
+% I1= 1/12*m1*l1^2; I2= 1/12*m2*l2^2; I3= 1/12*m3*l3^2;
+% 
+% T1= simplify(0.5*m1*(vc1.'*vc1) + 0.5*I1*dq1^2);
+% T2= simplify(0.5*m2*(vc2.'*vc2) + 0.5*I2*dq1^2);
+% T3= simplify(0.5*m3*(vc3.'*vc3) + 0.5*I3*(dq1+dq3)^2);
+% 
+% Tp = simplify(0.5*m_p*(v.'*v) + 0.5*Ip*(dq1+dq3)^2);
+% 
+% [T,M] = kinetic_energy({T1,T2,T3,Tp},[dq1,dq2,dq3])
+% 
+% %%
+% eqT1 = sym('T_1') == T1;
+% eqT2 = sym('T_2') == T2;
+% eqT3 = sym('T_3') == T3;
+% eqTp = sym('T_p') == Tp;
+% 
+% raw2latex([eqT1,eqT2,eqT3,eqTp])
+% %%
+% [~,elems] = rewrite(M)
+% %% M is the right one
+% l1=0.45; l2=0.7; l3=0.35; m1=10; m2=10; m3=4; m_p=2; Ip=0.01;
+% q1=pi/4; q2=0.25; q3=-pi/4;
+% eval(J_pinv)
+% %%
+% syms q1 q2 q3 real
+% J = jacobian(p,[q1,q2,q3]);
+% J_pinv = pinv_w(J,M);
+% %%
+% clear
+% syms q1 q2 q3 q4 r px py l1 l2 real
+% clc
+% p_obs = [px;py];
+% a = [l1*cos(q1)-(q2-l2)*sin(q1); l1*sin(q1)+(q2-l2)*cos(q1)];
+% b = p_obs + r*((a-p_obs)/norm(a-p_obs));
+% q_vector = [q1,q2,q3];
+% Ja = jacobian(a,q_vector);
+% dq0 = H_func("obs",a,Ja,b);
+% %%
+% q1=pi/4; q2=0.25; q3=-pi/4; r=0.05; px=0.736; py=-0.1;
+% dq1 = -2.1371; dq2=0.0818; dq3=-0.217;
+% l1 = 0.45; l2=0.7;
+% eval(dq0)
 
-pc1 = [dc1*cos(q1); dc1*sin(q1)]; vc1 = diff_wrt(pc1,q1,1);
-pc2 = [l1*cos(q1)-(q2-dc2)*sin(q1); l1*sin(q1)+(q2-dc2)*cos(q1)]; vc2 = diff_wrt(pc2,[q1,q2],1);
-pc3 = [l1*cos(q1)-q2*sin(q1)+dc3*cos(q1+q3); l1*sin(q1)+q2*cos(q1)+dc3*sin(q1+q3)]; vc3 = diff_wrt(pc3,[q1,q2,q3],1);
-p = [l1*cos(q1)-q2*sin(q1)+l3*cos(q1+q3); l1*sin(q1)+q2*cos(q1)+l3*sin(q1+q3)]; v = diff_wrt(p,[q1,q2,q3],1);
+% ex3
+% clear; clc
+% syms q1 q2 dq1 dq2 d1 d2 L m1 m2 I2 g0 x_a x_b y_a y_b u real
+% 
+% pc1 = [0;q1-d1]; vc1 = [0;dq1];
+% T1 = 0.5*m1*(vc1.'*vc1);
+% 
+% pc2 = [d2*cos(q2); q1+d2*sin(q2)]; vc2 = diff_wrt(pc2,[q1,q2],1);
+% T2 = 0.5*m2*(vc2.'*vc2) + 0.5*I2*dq2^2;
+% 
+% p = [L*cos(q2); q1+(L*sin(q2))];
+% 
+% [T,M] = kinetic_energy({T1,T2},[dq1,dq2]);
+% 
+% c = coriolis_terms(M);
+% 
+% g = gravity_terms([m1,m2],[0;-g0;0],{[pc1;0],[pc2;0]});
+% 
+% h = (p(2)-y_b)/(y_a-y_b) - (p(1)-x_b)/(x_a-x_b);
+% 
+% [dynamics,lambda,A,D,E,F] = reduced_dynamics(M,c,g,h)
+% 
+% u_sol = solve(dynamics,u)
+% 
+% %%
+% syms t T real
+% x_a = 0.7; x_b = 0.5; y_a = 2; y_b = 1;
+% q2_a = acos(x_a);
+% q1_a = y_a-sin(q2_a);
+% q2_b = acos(x_b);
+% q1_b = y_b-sin(q2_b);
+% eqs = trajectory("cubicTimeCustom",[q1_a,q1_b,0,0,q2_a,q2_b,0,0],T,2,t);
+% 
+% %%
+% syms u real
+% I2=1.2; L=1; d2 = 0.6; q2 = q2_a; dq2=0; ddq2= eqs{2,3}; g0=9.81; m1=15; m2=8; t=0;
+% 
+% eval(u_sol)
 
-I1= 1/12*m1*l1^2; I2= 1/12*m2*l2^2; I3= 1/12*m3*l3^2;
+%% Exam 10.09.2021 [https://www.diag.uniroma1.it/deluca/rob2_en/WrittenExamsRob2/Robotics2_21.09.10.pdf]
+% ex2
+% syms q1 q2 q3 dq1 dq2 dq3 L m real
+% 
+% d=L/2;
+% pc1 = [d*cos(q1); d*sin(q1)]; vc1 = diff_wrt(pc1,q1,1);
+% pc2 = [L*cos(q1)+d*cos(q1+q2); L*sin(q1)+d*sin(q1+q2)]; vc2 = diff_wrt(pc2,[q1,q2],1);
+% pc3 = [L*(cos(q1)+cos(q1+q2)) + d*cos(q1+q2+q3); L*(sin(q1)+sin(q1+q2))+d*sin(q1+q2+q3)]; vc3 = diff_wrt(pc3,[q1,q2,q3],1);
+% p = [L*(cos(q1)+cos(q1+q2)+cos(q1+q2+q3)); L*(sin(q1)+sin(q1+q2)+sin(q1+q2+q3))];
+% 
+% I=(1/12)*m*L^2;
+% 
+% T1 = 0.5*m*(vc1.'*vc1) + 0.5*I*dq1^2;
+% T2 = 0.5*m*(vc2.'*vc2) + 0.5*I*(dq1+dq2)^2;
+% T3 = 0.5*m*(vc3.'*vc3) + 0.5*I*(dq1+dq2+dq3)^2;
+% 
+% [T,M] = kinetic_energy({T1,T2,T3},[dq1,dq2,dq3])
+% %%
+% J = simplify(jacobian(p,[q1,q2,q3]));
+% %%
+% L = 0.5; m=5; q1=pi/2; q2=pi/2; q3=0;
+% M_num = eval(M);
+% J_pinv_num = eval(J_pinv);
+% J_num = eval(J);
+% 
+% M_p = (J_num*M_num^-1*J_num.')^-1
 
-T1= simplify(0.5*m1*(vc1.'*vc1) + 0.5*I1*dq1^2);
-T2= simplify(0.5*m2*(vc2.'*vc2) + 0.5*I2*dq1^2);
-T3= simplify(0.5*m3*(vc3.'*vc3) + 0.5*I3*(dq1+dq3)^2);
+%% Exam 04.02.2021 [https://www.diag.uniroma1.it/deluca/rob2_en/WrittenExamsRob2/Robotics2_21.02.04.pdf]
+%ex1
+% clc
+% syms q1 q2 q3 q4 dq1 dq2 dq3 dq4 m1 m2 m3 m4 I1 I2 I3 I4 dc1 dc3 dc4 a1 g0 real
+% pc1 = [dc1*cos(q1); dc1*sin(q1)]; vc1 = diff_wrt(pc1,q1,1);
+% pc2 = [a1*cos(q1); a1*sin(q1)]; vc2 = diff_wrt(pc2,q1,1);
+% pc3 = [a1*cos(q1)+(q3-dc3)*cos(q1+q2); a1*sin(q1)+(q3-dc3)*sin(q1+q2)]; vc3 = diff_wrt(pc3,[q1,q2,q3],1);
+% pc4 = [a1*cos(q1)+q3*cos(q1+q2)+dc4*cos(q1+q2+q4); a1*sin(q1)+q3*sin(q1+q2)+dc4*sin(q1+q2+q4)]; vc4 = diff_wrt(pc4,[q1,q2,q3,q4],1);
+% 
+% T1 = 0.5*m1*(vc1.'*vc1) + 0.5*I1*dq1^2;
+% T2 = 0.5*m2*(vc2.'*vc2) + 0.5*I2*(dq1+dq2)^2;
+% T3 = 0.5*m3*(vc3.'*vc3) + 0.5*I3*(dq1+dq2)^2;
+% T4 = 0.5*m4*(vc4.'*vc4) + 0.5*I4*(dq1+dq2+dq4)^2;
+% 
+% [T,M]= kinetic_energy({T1,T2,T3,T4},[dq1,dq2,dq3,dq4])
+% 
+% %%
+% syms A_m1 A_m2 A_m3 A_m4 A_m5 A_m6 ddq1 ddq2 ddq3 ddq4 real
+% c1 = I1 + I2 + I3 + I4 + a1^2*m2 + a1^2*m3 + a1^2*m4 + dc1^2*m1 + dc3^2*m3 + dc4^2*m4;
+% c2 = I2 + I3 + I4 + dc3^2*m3 + dc4^2*m4;
+% c3 = m3*dc3;
+% c4 = m3 + m4;
+% c5 = m4*dc4;
+% c6 = I4 + m4*dc4^2;
+% 
+% rM = rewrite(M);
+% M_a = subs(rM,c1,A_m1);
+% M_a = subs(M_a,c2,A_m2);
+% M_a = subs(M_a,c3,A_m3);
+% M_a = subs(collect(M_a,q3^2),c4,A_m4);
+% M_a = subs(collect(M_a,a1),c4,A_m4);
+% M_a = subs(collect(M_a,q3),c4,A_m4);
+% M_a = subs(M_a,c6,A_m6);
+% M_a = subs(M_a,c5,A_m5);
+% M_a = rewrite(M_a);
+% 
+% Y_A = jacobian(M_a*[ddq1;ddq2;ddq3;ddq4],[A_m1,A_m2,A_m3,A_m4,A_m5,A_m6])
+% 
+% %%
+% g = gravity_terms([m1,m2,m3,m4],[0;-g0;0],{[pc1;0],[pc2;0],[pc3;0],[pc4;0]})
+% 
+% syms a1g a2g a3g a4g a5g a6g real
+% c1 = a1*(m2+m3+m4) + m1*dc1;
+% c2 = dc3*m3;
+% c4 = dc4*m4;
+% c3 = m3+m4;
+% 
+% rg = rewrite(g);
+% g_a = subs(rg,c1,a1g);
+% g_a = subs(collect(g_a,g0),c1,a1g);
+% g_a = subs(collect(g_a,a1),c1,a1g);
 
-Tp = simplify(0.5*m_p*(v.'*v) + 0.5*Ip*(dq1+dq3)^2);
+%% Exam 12.07.2021 [https://www.diag.uniroma1.it/deluca/rob2_en/WrittenExamsRob2/Robotics2_21.07.12.pdf]
+% ex1
+% clc
+% syms q1 q2 q3 L real
+% 
+% p = [L*(cos(q1)+cos(q1+q2)+cos(q1+q2+q3)); L*(sin(q1)+sin(q1+q2)+sin(q1+q2+q3))];
+% 
+% J = jacobian(p,[q1,q2,q3]);
+% J_pinv = pinv(J);
+% dJ = diff_wrt(J,[q1,q2,q3],1);
+% 
+% %%
+% U_max = [3;3;3]
+% 
+% q1 = 0; q2 = 0; q3= pi;
+% dq1 = pi/2; dq2 = -pi; dq3 = pi/2;
+% L = 1;
+% J_num = eval(J);
+% J_pinv_num = pinv(J_num);
+% dJ_num = eval(dJ);
+% dq = [dq1;dq2;dq3];
+% 
+% u = -J_pinv_num*dJ_num*dq
+% 
+% ddp = J_num*u + dJ_num*dq
 
-[T,M] = kinetic_energy({T1,T2,T3,Tp},[dq1,dq2,dq3])
-
-%%
-eqT1 = sym('T_1') == T1;
-eqT2 = sym('T_2') == T2;
-eqT3 = sym('T_3') == T3;
-eqTp = sym('T_p') == Tp;
-
-raw2latex([eqT1,eqT2,eqT3,eqTp])
-%%
-[~,elems] = rewrite(M)
-%% M is the right one
-l1=0.45; l2=0.7; l3=0.35; m1=10; m2=10; m3=4; m_p=2; Ip=0.01;
-q1=pi/4; q2=0.25; q3=-pi/4;
-eval(M)
+% ex3
+% clear; clc
+% syms q1 q2 q3 dq1 dq2 dq3 m1 m2 m3 dc1 dc2 dc3 I1 I2 I3 real
+% 
+% pc1 = [dc1*cos(q1); dc1*sin(q1)]; vc1 = diff_wrt(pc1,q1,1);
+% pc2 = [(q2-dc2)*cos(q1); (q2-dc2)*sin(q1)]; vc2 = diff_wrt(pc2,[q1,q2],1);
+% pc3 = [q2*cos(q1)+dc3*cos(q1+q3); q2*sin(q1)+dc3*sin(q1+q3)]; vc3 = diff_wrt(pc3,[q1,q2,q3],1);
+% 
+% T1 = 0.5*m1*(vc1.'*vc1) + 0.5*I1*dq1^2;
+% T2 = 0.5*m2*(vc2.'*vc2) + 0.5*I2*dq1^2;
+% T3 = 0.5*m3*(vc3.'*vc3) + 0.5*I3*(dq1+dq3)^2;
+% 
+% [T,M] = kinetic_energy({T1,T2,T3},[dq1,dq2,dq3]);
+% c = coriolis_terms(M);
+% 
+% %%
+% syms a1 a2 a3 a4 a5 real
+% c1 = I1 + I2 + I3 + dc1^2*m1 + dc2^2*m2 + dc3^2*m3;
+% c2 = I3 + m3*dc3^2;
+% c3 = dc3*m3;
+% c4 = m2 + m3;
+% c5 = m2*dc2;
+% 
+% rM = rewrite(M);
+% M_a = subs(rM,c1,a1);
+% M_a = subs(M_a,c2,a2);
+% M_a = subs(M_a,c3,a3);
+% M_a = subs(M_a,c4,a4);
+% M_a = subs(collect(M_a,q2),c4,a4);
+% M_a = subs(M_a,c5,-a5);
+% 
+% %%
+% rc = rewrite(c);
+% c_a = subs(rc,c1,a1);
+% c_a = subs(c_a,c2,a2);
+% c_a = subs(c_a,c3,a3);
+% c_a = subs(c_a,c4,a4);
+% c_a = subs(collect(c_a,q2),c4,a4);
+% c_a = subs(c_a,c5,-a5);
+% %%
+% syms ddq1_r ddq2_r ddq3_r dq1_r dq2_r dq3_r real
+% coeffs_K = [a2,a3];
+% coeffs_U = [a1,a4,a5];
+% ddq_r = [ddq1_r;ddq2_r;ddq3_r];
+% dq_r = [dq1_r;dq2_r;dq3_r];
+% [S,~,~] = factorize_M(M_a);
+% tau = M_a*ddq_r + S*dq_r + c;
+% 
+% Y_K = simplify(jacobian(tau,coeffs_K));
+% Y_U = simplify(jacobian(tau,coeffs_U));

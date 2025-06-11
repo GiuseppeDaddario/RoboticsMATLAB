@@ -26,8 +26,8 @@ lambda = simplify(E.'*(M*F*dv-M*(E*dA+F*dD)*F*v+c+g-u));
 
 
 if plot
-    dyn_eq = "(F^T M F) \dot{v} = F^T (u - c - g + M (E \dot{A} + F \dot{D}) F v) ";
-    lambda_eq = "E^T (M F \dot{v} - M (E \dot{A} + F \dot{D}) F v + c + g - u) ";
+    dyn_eq = "(F^T M F)  ";
+    lambda_eq = " ";
     
     figure;
     ax = axes;
@@ -40,10 +40,12 @@ if plot
 
     FONTSIZE = 16;
 
-    text(ax, 0, 0.5, sprintf('$$%s$$', dyn_eq), ...
-            'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
-    text(ax, 0, 0.2, sprintf('$$%s$$', lambda_eq), ...
-            'Interpreter', 'latex', 'FontSize', FONTSIZE, 'VerticalAlignment', 'top');
+    text(ax, 0, -0.3, ['$$', dyn_eq, '$$'], ...
+                    'Interpreter', 'latex', ...
+                    'FontSize', FONTSIZE, 'HorizontalAlignment', 'left');
+    text(ax, 0, -0.3*2, ['$$', lambda_eq, '$$'], ...
+                    'Interpreter', 'latex', ...
+                    'FontSize', FONTSIZE, 'HorizontalAlignment', 'left');
 
     hold(ax, 'off');
 end
